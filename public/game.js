@@ -1,44 +1,54 @@
 const Socket = io();
 
-let Canvas_Sketch;
-const Width_Sketch = 600;
-const Height_Sketch = 600;
+let canvas;
+const width = 600;
+const height = 400;
 
-const Keys = ["w", "s", "d", "a"];
-const Movement = {};
+let myHand = [];
+let fieldCards = [];
+let currentTurn = null;
 
 function setup() {
-    Canvas_Sketch = createCanvas(Width_Sketch, Height_Sketch);
-    Canvas_Sketch.parent("Parent");
+    canvas = createCanvas(width, height);
+    canvas.parent("Parent");
 
-    background(225);
-
-    Socket.on("connect", function () {
-        Socket.emit("Setup", prompt("Please enter your name."), Math.random() * Width_Sketch, Math.random() * Height_Sketch);
+    Socket.on("GameInitialized", function (gameState) {
+        myHand = gameState.playerHands[Socket.id];
+        fieldCards = gameState.fieldCards;
+        currentTurn = gameState.turn;
+        drawGame();
     });
 }
+
 function draw() {
-}
-function keyPressed() {
-    if (Keys.includes(key)) {
-        Movement[key] = true;
-
-        Socket.emit("Movement", Movement);
-    }
-}
-function keyReleased() {
-    if (Keys.includes(key)) {
-        Movement[key] = false;
-
-        Socket.emit("Movement", Movement);
-    }
+    drawGame();
 }
 
-Socket.on("Draw", function (_Players) {
-    background(225);
-
-    for (const i in _Players) {
-        text(_Players[i].Name + "#" + _Players[i].ID, _Players[i].PosX + 15, _Players[i].PosY - 15);
-        ellipse(_Players[i].PosX, _Players[i].PosY, 30, 30);
+function drawGame() {
+    // 自分の手札を描画
+    for (let i = 0; i < myHand.length; i++) {
+        text(myHand[i], 50 + i * 100, height - 50); // 手札の表示位置
     }
+
+    // 場札の描画
+    for (const playerId in fieldCards) {
+        for (let i = 0; i < fieldCards[playerId].length; i++) {
+            text(fieldCards[playerId][i], 50 + i * 100, 100 + (playerId === Socket.id ? 0 : 50));
+        }
+    }
+}
+
+function mousePressed() {
+    // カードを選んで場に置くロジックを実装
+    const cardIndex = Math.floor(mouseX / 100); // クリック位置からインデックスを計算
+    if (cardIndex >= 0 && cardIndex < myHand.length) {
+        // ここでカードを場に置く
+        Socket.emit("PlayCard", cardIndex, 0); // 一時的にインデックスを指定
+    }
+}
+
+Socket.on("UpdateGameState", function (gameState) {
+    myHand = gameState.playerHands[Socket.id]; // 自分の手札の更新
+    fieldCards = gameState.fieldCards; // 場札の更新
+    currentTurn = gameState.turn; // 現在のターンの更新
 });
