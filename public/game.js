@@ -12,6 +12,10 @@ function setup() {
     canvas = createCanvas(width, height);
     canvas.parent("Parent");
 
+    Socket.on("connect", function () {
+        Socket.emit("Setup", prompt("Please enter your name."));
+    });
+
     Socket.on("GameInitialized", function (gameState) {
         myHand = gameState.playerHands[Socket.id];
         fieldCards = gameState.fieldCards;
