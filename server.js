@@ -59,6 +59,10 @@ function shuffle(array) {
     return array;
 }
 
+function PlayersReady() {
+    return Object.values(Players).every(player => player.name !== null);
+}
+
 IO.on("connection", function (_Socket) {
     console.log("A player connected:", _Socket.id); // ’Ç‰Á
 
@@ -68,7 +72,7 @@ IO.on("connection", function (_Socket) {
     });
 
     // ƒQ[ƒ€‚Ì‰Šú‰»
-    if (Object.keys(Players).length === 2) {
+    if (Object.keys(Players).length === 2 && PlayersReady()) {
         initializeGame();
         IO.emit("GameInitialized", GameState);
     }
