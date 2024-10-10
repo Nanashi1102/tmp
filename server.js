@@ -15,7 +15,6 @@ const CARD_VALUES = [
     'A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'
 ];
 const CARD_SUITS = ['S', 'C', 'D', 'H'];
-
 function createDeck() {
     const deck = [];
     for (const suit of CARD_SUITS) {
@@ -27,6 +26,8 @@ function createDeck() {
 }
 
 const Players = {};
+
+let currentTurn = null; // 現在のターンのプレイヤーID
 
 const GameState = {
     deck: createDeck(),
@@ -46,6 +47,7 @@ function initializeGame() {
         GameState.fieldCards[playerId] = [GameState.deck.splice(0, 3)]; // 場札を置く
     }
     GameState.turn = playerIds[0]; // 最初のターンのプレイヤー
+    console.log("最初のプレイヤーは" + playerIds[0] + "です"); // 追加
 }
 
 // シャッフル関数

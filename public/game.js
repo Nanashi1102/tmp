@@ -17,6 +17,12 @@ function setup() {
         fieldCards = gameState.fieldCards;
         currentTurn = gameState.turn;
         drawGame();
+        if (Socket.id === GameState.currentTurn) {
+            console.log("あなたのターンです");
+            // ターン中の操作を許可する処理
+        } else {
+            console.log("相手のターンです");
+        }
     });
 }
 
