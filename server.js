@@ -63,16 +63,15 @@ IO.on("connection", function (_Socket) {
     console.log("A player connected:", _Socket.id); // 追加
 
     Players[_Socket.id] = { id: _Socket.id, name: null };
+    _Socket.on("Setup", function (_Name) {
+        Players[_Socket.id].name = _Name;
+    });
 
     // ゲームの初期化
     if (Object.keys(Players).length === 2) {
         initializeGame();
         IO.emit("GameInitialized", GameState);
     }
-
-    _Socket.on("Setup", function (_Name) {
-        Players[_Socket.id].name = _Name;
-    });
 
     _Socket.on("PlayCard", function (_CardIndex, _FieldIndex) {
         // カードを場に置くロジックを実装
