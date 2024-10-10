@@ -25,9 +25,8 @@ function setup() {
         }
     });
 }
-
 function draw() {
-    drawGame();
+
 }
 
 function drawGame() {

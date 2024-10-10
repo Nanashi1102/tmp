@@ -47,7 +47,7 @@ function initializeGame() {
         GameState.fieldCards[playerId] = [GameState.deck.splice(0, 3)]; // 場札を置く
     }
     GameState.turn = playerIds[0]; // 最初のターンのプレイヤー
-    console.log("最初のプレイヤーは" + playerIds[0] + "です"); // 追加
+    console.log("first player is" + playerIds[0]); // 追加
 }
 
 // シャッフル関数
